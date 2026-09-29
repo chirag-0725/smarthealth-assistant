@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard — SmartHealth Assistant</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="mark">SmartHealth Assistant</div>
+
+      <button class="nav-item active" data-panel="logsPanel">Health Logs</button>
+      <button class="nav-item" data-panel="vitalsPanel">Vitals</button>
+      <button class="nav-item" data-panel="medsPanel">Medications</button>
+      <button class="nav-item" data-panel="trendsPanel">Trends</button>
+      <button class="nav-item" data-panel="aiPanel">AI Assistant</button>
+      <button class="nav-item" data-panel="labPanel">Lab Reports</button>
+      <button class="nav-item" data-panel="profilePanel">Profile</button>
+
+      <div class="sidebar-footer">
+        <div class="who" id="whoLabel">Signed in</div>
+        <button class="logout-btn" id="logoutBtn">Log out</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <!-- Health Logs panel -->
+      <section class="panel active" id="logsPanel">
+        <div class="panel-header">
+          <div>
+            <h2>Your health log</h2>
+            <div class="sub">A day-by-day record of how you've been feeling.</div>
+          </div>
+          <button class="btn-secondary" id="toggleFormBtn">Add entry</button>
+          <button class="btn-secondary" style="background:var(--ink-muted); margin-left:8px;" id="exportPdfBtn">Export PDF</button>
+        </div>
+
+        <form class="log-form" id="logForm">
+          <div class="row">
+            <div>
+              <label for="logDate">Date</label>
+              <input type="date" id="logDate" required>
+            </div>
+            <div>
+              <label for="logSleep">Hours of sleep</label>
+              <input type="number" id="logSleep" min="0" max="24" step="0.5">
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="logMood">Mood</label>
+              <select id="logMood">
+                <option value="">Not sure</option>
+                <option value="great">Great</option>
+                <option value="good">Good</option>
+                <option value="okay">Okay</option>
+                <option value="low">Low</option>
+                <option value="rough">Rough</option>
+              </select>
+            </div>
+            <div>
+              <label for="logSymptoms">Symptoms</label>
+              <input type="text" id="logSymptoms" placeholder="e.g. mild headache">
+            </div>
+          </div>
+          <div style="margin-bottom:14px;">
+            <label for="logNotes">Notes</label>
+            <textarea id="logNotes" placeholder="Anything else worth remembering about today"></textarea>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button type="submit" class="btn-secondary">Save entry</button>
+            <button type="button" class="logout-btn" style="color:#5C6B62;border-color:#E4DFD3;width:auto;" id="cancelFormBtn">Cancel</button>
+          </div>
+        </form>
+
+        <div id="logsContainer">
+          <div class="empty-state">Loading your entries…</div>
+        </div>
+      </section>
+
+      <!-- AI Assistant panel -->
+      <section class="panel" id="aiPanel">
+        <div class="panel-header">
+          <div>
+            <h2>Ask about your symptoms</h2>
+            <div class="sub">General information only — not a diagnosis.</div>
+          </div>
+          <button class="btn-secondary" id="weeklySummaryBtn">Summarize my week</button>
+        </div>
+
+        <div class="chat-hint">Describe what you're feeling in plain words, like you would to a friend. For anything severe or sudden, contact a doctor or emergency services directly.</div>
+
+        <div class="chat-box">
+          <div class="chat-log" id="chatLog"></div>
+          <div class="chat-input-row">
+            <input type="text" id="chatInput" placeholder="e.g. I've had a mild headache and low energy for two days">
+            <button class="btn-secondary" id="chatSendBtn">Send</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Vitals panel -->
+      <section class="panel" id="vitalsPanel">
+        <div class="panel-header">
+          <div>
+            <h2>Vitals</h2>
+            <div class="sub">Blood pressure, heart rate and weight over time.</div>
+          </div>
+          <button class="btn-secondary" id="toggleVitalFormBtn">Add reading</button>
+        </div>
+
+        <form class="log-form" id="vitalForm">
+          <div class="row">
+            <div>
+              <label for="vitalDate">Date</label>
+              <input type="date" id="vitalDate" required>
+            </div>
+            <div>
+              <label for="vitalHeartRate">Heart rate (bpm)</label>
+              <input type="number" id="vitalHeartRate" min="0">
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="vitalSystolic">Blood pressure — systolic</label>
+              <input type="number" id="vitalSystolic" min="0">
+            </div>
+            <div>
+              <label for="vitalDiastolic">Blood pressure — diastolic</label>
+              <input type="number" id="vitalDiastolic" min="0">
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="vitalWeight">Weight (kg)</label>
+              <input type="number" id="vitalWeight" min="0" step="0.1">
+            </div>
+            <div>
+              <label for="vitalNotes">Notes</label>
+              <input type="text" id="vitalNotes" placeholder="optional">
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button type="submit" class="btn-secondary">Save reading</button>
+            <button type="button" class="logout-btn" style="color:#5C6B62;border-color:#E4DFD3;width:auto;" id="cancelVitalFormBtn">Cancel</button>
+          </div>
+        </form>
+
+        <div id="vitalsContainer">
+          <div class="empty-state">Loading your readings…</div>
+        </div>
+      </section>
+
+      <!-- Medications panel -->
+      <section class="panel" id="medsPanel">
+        <div class="panel-header">
+          <div>
+            <h2>Medications</h2>
+            <div class="sub">A simple list of what you're taking and when.</div>
+          </div>
+          <button class="btn-secondary" id="toggleMedFormBtn">Add medication</button>
+        </div>
+
+        <form class="log-form" id="medForm">
+          <div class="row">
+            <div>
+              <label for="medName">Name</label>
+              <input type="text" id="medName" required placeholder="e.g. Vitamin D">
+            </div>
+            <div>
+              <label for="medDosage">Dosage</label>
+              <input type="text" id="medDosage" placeholder="e.g. 1000 IU">
+            </div>
+          </div>
+          <div style="margin-bottom:14px;">
+            <label for="medFrequency">Frequency</label>
+            <input type="text" id="medFrequency" placeholder="e.g. Once daily, with breakfast">
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button type="submit" class="btn-secondary">Save medication</button>
+            <button type="button" class="logout-btn" style="color:#5C6B62;border-color:#E4DFD3;width:auto;" id="cancelMedFormBtn">Cancel</button>
+          </div>
+        </form>
+
+        <div id="medsContainer">
+          <div class="empty-state">Loading your medications…</div>
+        </div>
+      </section>
+
+      <!-- Trends panel -->
+      <section class="panel" id="trendsPanel">
+        <div class="panel-header">
+          <div>
+            <h2>Trends</h2>
+            <div class="sub">Your sleep and mood over your last logged entries.</div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h3 style="font-size:16px; margin-bottom:12px;">Sleep (hours)</h3>
+          <canvas id="sleepChart" height="90"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3 style="font-size:16px; margin-bottom:12px;">Mood</h3>
+          <canvas id="moodChart" height="90"></canvas>
+        </div>
+      </section>
+
+      <!-- Lab Reports panel -->
+      <section class="panel" id="labPanel">
+        <div class="panel-header">
+          <div>
+            <h2>Understand a lab report</h2>
+            <div class="sub">Paste the text from a test result to get a plain-language explanation.</div>
+          </div>
+        </div>
+        <div class="chat-hint">This explains what terms and values generally mean — it can't tell you if your specific numbers are normal. Always review results with your doctor.</div>
+        <textarea id="labText" placeholder="Paste your lab report text here…" style="width:100%; min-height:160px; padding:12px; border:1px solid var(--border); border-radius:var(--radius); font-family:inherit;"></textarea>
+        <div style="margin-top:12px;">
+          <button class="btn-secondary" id="labSubmitBtn">Explain this</button>
+        </div>
+        <div id="labResult"></div>
+      </section>
+
+      <!-- Profile panel -->
+      <section class="panel" id="profilePanel">
+        <div class="panel-header">
+          <div>
+            <h2>Profile</h2>
+            <div class="sub">Update your account details.</div>
+          </div>
+        </div>
+
+        <div id="profileNote"></div>
+
+        <form id="profileForm" style="max-width:360px;">
+          <div class="field">
+            <label for="profileName">Name</label>
+            <input type="text" id="profileName" required>
+          </div>
+          <div class="field">
+            <label for="profileEmail">Email</label>
+            <input type="email" id="profileEmail" required>
+          </div>
+          <button class="btn-secondary" type="submit">Save changes</button>
+        </form>
+
+        <hr class="section-divider">
+
+        <h3 style="font-size:18px; margin-bottom:16px;">Change password</h3>
+        <div id="passwordNote"></div>
+        <form id="passwordForm" style="max-width:360px;">
+          <div class="field">
+            <label for="currentPassword">Current password</label>
+            <input type="password" id="currentPassword" required>
+          </div>
+          <div class="field">
+            <label for="newPassword">New password</label>
+            <input type="password" id="newPassword" required minlength="6">
+          </div>
+          <button class="btn-secondary" type="submit">Update password</button>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

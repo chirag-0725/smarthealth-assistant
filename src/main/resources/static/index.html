@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartHealth Assistant</title>
+</head>
+<body style="background:#FAF7F2;">
+  <script>
+    const token = localStorage.getItem('sh_token');
+    window.location.replace(token ? 'dashboard.html' : 'login.html');
+  </script>
+</body>
+</html>
